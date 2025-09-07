@@ -34,13 +34,14 @@ The benchmarks include:
 - **RHEL 9 / Fedora / Ubuntu** (x86_64) with Intel CPU + iGPU  
 - **Intel Media SDK / oneVPL** installed  
 - **FFmpeg** compiled with:
-  ```bash
+
+```bash
   --enable-libx265 --enable-gpl --enable-libvpl --enable-nonfree --enable-libmfx
 ```
 
 * Sample video (`sample.mp4`) for testing
 * `bc` installed for floating-point calculations in bash
-```
+
 ---
 
 ## Workflow
