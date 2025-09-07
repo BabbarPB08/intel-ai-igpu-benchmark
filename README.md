@@ -6,6 +6,10 @@
 This repository provides a comprehensive benchmark framework to compare **CPU encoding vs Intel iGPU (Quick Sync Video, QSV) hardware-accelerated encoding** using FFmpeg.  
 The focus is on **AI-driven video processing workloads** such as **CCTV surveillance, drone footage streaming, and real-time face/object detection**, where encoding speed directly impacts analytics performance.  
 
+![Demo](/demo.gif)
+
+
+
 The benchmarks include:
 - CPU-only HEVC encoding (`libx265`)
 - Intel iGPU H.264 QSV encoding
