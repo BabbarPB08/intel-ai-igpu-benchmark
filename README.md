@@ -1,10 +1,10 @@
-
-# Intel iGPU AI Video Benchmark: CPU vs IGPU (QSV)
+# Intel iGPU AI Video Benchmark: CPU vs iGPU (QSV)
 
 ![Intel iGPU & AI](https://img.shields.io/badge/Intel-iGPU%20AI-blue) ![FFmpeg](https://img.shields.io/badge/FFmpeg-Benchmark-orange) ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Abstract
-This repository provides a comprehensive benchmark framework to compare **CPU encoding vs Intel iGPU (Quick Sync Video, QSV) hardware-accelerated encoding** using FFmpeg. The primary goal is to demonstrate the performance benefits of Intel iGPU for **AI/video processing workflows**, helping developers, researchers, and AI enthusiasts make informed decisions on hardware acceleration.
+This repository provides a comprehensive benchmark framework to compare **CPU encoding vs Intel iGPU (Quick Sync Video, QSV) hardware-accelerated encoding** using FFmpeg.  
+The focus is on **AI-driven video processing workloads** such as **CCTV surveillance, drone footage streaming, and real-time face/object detection**, where encoding speed directly impacts analytics performance.  
 
 The benchmarks include:
 - CPU-only HEVC encoding (`libx265`)
@@ -15,10 +15,14 @@ The benchmarks include:
 ---
 
 ## Objective
-- Showcase Intel iGPU acceleration with **real-time AI/video workloads**
-- Compare CPU vs hardware-accelerated encoding performance
-- Provide a ready-to-run **benchmark script** for AI/video applications
-- Educate on FFmpeg + Intel oneVPL integration
+- Demonstrate how Intel iGPU acceleration benefits **AI-powered video analytics**
+- Showcase use cases like:
+  - **CCTV monitoring** (multiple live streams)
+  - **Drone video feeds** (real-time transmission + object detection)
+  - **Face recognition systems** (fast encoding for inference pipelines)
+- Compare **CPU vs hardware-accelerated encoding performance**
+- Provide a ready-to-run **benchmark script** for AI/video developers
+- Educate on **FFmpeg + Intel oneVPL** integration for AI-ready pipelines
 
 ---
 
@@ -39,15 +43,14 @@ The benchmarks include:
 
 ```mermaid
 flowchart LR
-    A[Input Video] --> B[Benchmark Script]
-    B --> C{Select Mode}
-    C -->|CPU| D[CPU Encoding libx265 HEVC]
-    C -->|iGPU| E[Intel iGPU Encoding h264_qsv]
-    D --> F[Output CPU Video]
-    E --> G[Output iGPU Video]
-    F --> H[Performance Metrics]
-    G --> H[Metrics: FPS, Time, Speed]
-
+    A["Input Video: sample.mp4"] --> B["Benchmark Script"]
+    B --> C{"Select Mode"}
+    C -->|CPU| D["CPU Encoding: libx265 (HEVC)"]
+    C -->|iGPU| E["Intel iGPU Encoding: h264_qsv"]
+    D --> F["Output: output_cpu_hevc.mp4"]
+    E --> G["Output: output_qsv_h264.mp4"]
+    F --> H["Performance Metrics: FPS, Time, Speed"]
+    G --> H
 ```
 
 > Optional: Run `sudo intel_gpu_top` during iGPU benchmark to monitor GPU usage.
@@ -107,17 +110,14 @@ flowchart LR
 
 ---
 
-## Repository Structure
+## Why This Matters for AI
 
-```
-.
-├── benchmark_qsv.sh       # Benchmarking script
-├── sample.mp4             # Test video (ignored via .gitignore)
-├── README.md              # This file
-├── oneVPL/                # Intel oneVPL source
-├── ffmpeg-qsv/            # FFmpeg source
-└── .gitignore             # Ignore sample video
-```
+* **CCTV Surveillance**: Dozens of cameras → faster encoding = more streams handled in real time
+* **Drone Monitoring**: Low latency encoding → smoother live streaming for AI object/terrain detection
+* **Face/License Plate Recognition**: Faster video pipelines = quicker inference response times
+* **Edge AI Devices**: Reduces CPU load → more resources available for **AI inference models**
+
+Intel iGPU acceleration ensures **real-time AI performance without requiring expensive GPUs**.
 
 ---
 
@@ -128,23 +128,15 @@ See [LICENSE](LICENSE) for details.
 
 ---
 
-## Notes
-
-* Ensure your Intel CPU supports **Quick Sync Video** for iGPU encoding.
-* Resolution and bitrate adjustments can be done in `benchmark_qsv.sh`.
-* Suitable for **AI/data pipelines** requiring fast video encoding.
-
----
-
 ## Contributing
 
 * Fork this repository
 * Submit PRs for improvements in benchmark scripts or workflows
-* Share performance results on different hardware
+* Share performance results on **CCTV/Drone/AI datasets**
 
 ---
 
 ## Keywords
 
-Intel iGPU, AI, Video Benchmark, FFmpeg, QSV, HEVC, CPU vs GPU, Hardware Acceleration
+Intel iGPU, AI, Video Benchmark, FFmpeg, QSV, HEVC, CPU vs GPU, Hardware Acceleration, **CCTV Video Analytics**, **Drone AI**, **Face Detection**
 
