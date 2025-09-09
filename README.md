@@ -1,46 +1,90 @@
+
 # Intel iGPU AI Video Benchmark: CPU vs iGPU (QSV)
 
 ![Intel iGPU & AI](https://img.shields.io/badge/Intel-iGPU%20AI-blue) ![FFmpeg](https://img.shields.io/badge/FFmpeg-Benchmark-orange) ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Abstract
-This repository provides a comprehensive benchmark framework to compare **CPU encoding vs Intel iGPU (Quick Sync Video, QSV) hardware-accelerated encoding** using FFmpeg.  
-The focus is on **AI-driven video processing workloads** such as **CCTV surveillance, drone footage streaming, and real-time face/object detection**, where encoding speed directly impacts analytics performance.  
+This repository provides a benchmark framework to compare **CPU-only encoding vs Intel iGPU (Quick Sync Video, QSV) hardware-accelerated encoding** using FFmpeg.  
+
+Many developers are unaware that modern Intel CPUs include a **dedicated GPU region (iGPU)** on the same die, designed specifically for parallel workloads like **video encoding, decoding, and AI acceleration**.  
+By leveraging this, we avoid wasting CPU cycles on video tasks and free the CPU for **AI inference, business logic, or system workloads**.  
+
+This benchmark focuses on **AI-driven video processing** such as:
+- **CCTV surveillance**
+- **Drone footage streaming**
+- **Real-time face/object detection**  
+
+where encoding speed directly impacts analytics performance.  
 
 ![Demo](/demo.gif)
 
+---
 
+## Why CPU vs iGPU Matters
 
-The benchmarks include:
-- CPU-only HEVC encoding (`libx265`)
-- Intel iGPU H.264 QSV encoding
-- Frame rate, encoding speed, and time comparisons
-- Optional monitoring of GPU utilization
+When the Intel **i915 driver** is loaded, video workloads are automatically offloaded to the **iGPU execution units (EUs)**, leaving the CPU free for other tasks.  
+This prevents “CPU abuse” for video-related operations.  
+
+### Architecture Overview
+
+```text
++---------------------------------------------------+
+|                  Intel CPU Package                |
+|                                                   |
+|   +-------------------+     +-----------------+   |
+|   |   CPU Cores       |     |   iGPU (EUs)    |   |
+|   | (General Compute) |     | (Video/Parallel |   |
+|   |                   |     |   Workloads)    |   |
+|   +-------------------+     +-----------------+   |
+|                                                   |
++---------------------------------------------------+
+
+         |                                 |
+         v                                 v
+   Regular apps                      Video/AI workloads
+   (OS, DB, logic)                   (oneVPL, VAAPI, etc.)
+         |                                 |
+         v                                 v
+       i915 driver  <--------------------> Kernel
+````
+
+---
+
+## Benchmarks Include
+
+* CPU-only HEVC encoding (`libx265`)
+* Intel iGPU H.264 QSV encoding
+* Frame rate, encoding speed, and time comparisons
+* Optional GPU utilization monitoring (`intel_gpu_top`)
 
 ---
 
 ## Objective
-- Demonstrate how Intel iGPU acceleration benefits **AI-powered video analytics**
-- Showcase use cases like:
-  - **CCTV monitoring** (multiple live streams)
-  - **Drone video feeds** (real-time transmission + object detection)
-  - **Face recognition systems** (fast encoding for inference pipelines)
-- Compare **CPU vs hardware-accelerated encoding performance**
-- Provide a ready-to-run **benchmark script** for AI/video developers
-- Educate on **FFmpeg + Intel oneVPL** integration for AI-ready pipelines
+
+* Show how Intel iGPU acceleration boosts **AI-powered video analytics**
+* Demonstrate use cases:
+
+  * **CCTV monitoring** (multiple live streams)
+  * **Drone video feeds** (real-time transmission + detection)
+  * **Face/License plate recognition**
+* Compare **CPU vs hardware-accelerated encoding**
+* Provide a **ready-to-run benchmark script**
+* Educate on **FFmpeg + Intel oneVPL integration**
 
 ---
 
 ## Requirements
-- **RHEL 9 / Fedora / Ubuntu** (x86_64) with Intel CPU + iGPU  
-- **Intel Media SDK / oneVPL** installed  
-- **FFmpeg** compiled with:
+
+* **RHEL 9 / Fedora / Ubuntu** with Intel CPU + iGPU
+* **Intel oneVPL** installed
+* **FFmpeg** compiled with:
 
 ```bash
   --enable-libx265 --enable-gpl --enable-libvpl --enable-nonfree --enable-libmfx
 ```
 
 * Sample video (`sample.mp4`) for testing
-* `bc` installed for floating-point calculations in bash
+* `bc` installed for floating-point calculations
 
 ---
 
@@ -58,13 +102,11 @@ flowchart LR
     G --> H
 ```
 
-> Optional: Run `sudo intel_gpu_top` during iGPU benchmark to monitor GPU usage.
-
 ---
 
 ## Installation & Setup
 
-1. **Clone oneVPL (Intel Video Processing Library)**
+1. **Clone and build oneVPL**
 
    ```bash
    git clone https://github.com/oneapi-src/oneVPL.git
@@ -75,7 +117,7 @@ flowchart LR
    sudo make install
    ```
 
-2. **Compile FFmpeg with Intel QSV & HEVC support**
+2. **Compile FFmpeg with Intel QSV**
 
    ```bash
    git clone https://github.com/FFmpeg/FFmpeg.git
@@ -85,7 +127,7 @@ flowchart LR
    sudo make install
    ```
 
-3. **Place your test video**
+3. **Add a test video**
 
    ```bash
    cp /path/to/your/video/sample.mp4 .
@@ -107,37 +149,36 @@ flowchart LR
 ./benchmark_qsv.sh sample.mp4 on-igpu
 ```
 
-### Output
+### Outputs
 
 * CPU: `output_cpu_hevc.mp4`
 * Intel iGPU: `output_qsv_h264.mp4`
-* Metrics printed: **Encoding time**, **FPS**, **Speed**, **Codec**
+* Metrics: **Encoding time, FPS, Speed, Codec**
 
 ---
 
 ## Why This Matters for AI
 
-* **CCTV Surveillance**: Dozens of cameras → faster encoding = more streams handled in real time
-* **Drone Monitoring**: Low latency encoding → smoother live streaming for AI object/terrain detection
-* **Face/License Plate Recognition**: Faster video pipelines = quicker inference response times
-* **Edge AI Devices**: Reduces CPU load → more resources available for **AI inference models**
+* **CCTV Surveillance** → more streams in real time
+* **Drone Monitoring** → smoother low-latency AI analysis
+* **Face/License Plate Recognition** → faster pipelines = quicker inference
+* **Edge AI Devices** → CPU stays free for AI models
 
-Intel iGPU acceleration ensures **real-time AI performance without requiring expensive GPUs**.
+With Intel iGPU acceleration, you get **real-time AI performance** without buying dedicated GPUs.
 
 ---
 
 ## License
 
-This project is licensed under the **MIT License**.
-See [LICENSE](LICENSE) for details.
+MIT License – see [LICENSE](LICENSE).
 
 ---
 
 ## Contributing
 
-* Fork this repository
-* Submit PRs for improvements in benchmark scripts or workflows
-* Share performance results on **CCTV/Drone/AI datasets**
+* Fork this repo
+* Submit PRs for new benchmarks
+* Share results from your **AI/CCTV/Drone workloads**
 
 ---
 
